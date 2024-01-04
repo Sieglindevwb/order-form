@@ -21,6 +21,7 @@ function whatIsHappening() {
     var_dump($_SESSION);
 }
 
+
 $products = [
     ['name' => 'The One With All the Cheesecakes', 'price' => 10.7],
     ['name' => 'The One With the East German Laundry Detergent - Chickenwings', 'price' => 11.6],
@@ -43,23 +44,57 @@ function validate()
     return [];
 }
 
-function handleForm()
+function handleForm($formData, $products)
 {
     // TODO: form related tasks (step 1)
+    whatIsHappening();
 
-    // Validation (step 2)
+    //Extract user information 
+    $email = isset($formData['email']) ? $formData['email'] : '';
+    $street = isset($formData['street']) ? $formData['street'] : '';
+    $streetnumber = isset($formData['streetnumber']) ? $formData['streetnumber'] : '';
+    $city = isset($formData['city']) ? $formData['city'] : '';
+    $zipcode = isset($formData['zipcode']) ? $formData['zipcode'] : '';
+
+    //extract selected products
+    $selectedProducts = [];
+    if(isset($formData['products']) && is_array($formData['products'])) {
+        foreach($formData['products'] as $i => $value) {
+            if($value == 1) {
+                $selectedProducts[] = $products[$i]['name'];
+            }
+        }
+    }
+
+    // Display order confirmation 
+    echo "<h2>Order Confirmation";
+    echo "<p>Email: $email</p>";
+    echo "<p>Delivery Address: $street $streetnumber, $city, $zipcode</p>";
+    echo "<p>Selected Products:</p>";
+    echo "<ul>";
+    foreach ($selectedProducts as $products){
+        echo "<li>$products</li>";
+    }
+    echo "</ul>";
+
+    if($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $formData = $_POST;
+
+        // Validation (step 2)
     $invalidFields = validate();
     if (!empty($invalidFields)) {
         // TODO: handle errors
     } else {
         // TODO: handle successful submission
     }
+    }
+
+    
 }
 
 // TODO: replace this if by an actual check for the form to be submitted
-$formSubmitted = false;
-if ($formSubmitted) {
-    handleForm();
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    handleForm($_POST, $products);
 }
 
 require 'form-view.php';
