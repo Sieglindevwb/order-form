@@ -1,26 +1,14 @@
 <?php
 
-// This file is your starting point (= since it's the index)
-// It will contain most of the logic, to prevent making a messy mix in the html
-
-// This line makes PHP behave in a more strict way
 declare(strict_types=1);
-
-// We are going to use session variables so we need to enable sessions
 session_start();
 
-// Use this function when you need to need an overview of these variables
-function whatIsHappening() {
-    echo '<h2>$_GET</h2>';
-    var_dump($_GET);
-    echo '<h2>$_POST</h2>';
-    var_dump($_POST);
-    echo '<h2>$_COOKIE</h2>';
-    var_dump($_COOKIE);
-    echo '<h2>$_SESSION</h2>';
-    var_dump($_SESSION);
+function test_input($data) {
+    $data = trim($data);
+    $data = stripslashes($data);
+    $data = htmlspecialchars($data);
+    return $data;
 }
-
 
 $products = [
     ['name' => 'The One With All the Cheesecakes', 'price' => 10.7],
@@ -38,61 +26,89 @@ $products = [
 
 $totalValue = 0;
 
-function validate()
-{
-    // TODO: This function will send a list of invalid fields back
-    return [];
+function validate($formData) {
+    $errors = [];
+    $formData = $_POST;
+
+    if (empty($formData["email"])) {
+        $errors["email"] = 'Email is required';
+    } elseif (!filter_var(test_input($formData["email"]), FILTER_VALIDATE_EMAIL)) {
+        $errors["email"] = 'Invalid email format';
+    }
+
+    if (empty($formData["street"])) {
+        $errors["street"] = 'Please enter your street.';
+    } else {
+        $formData["street"] = test_input($formData["street"]);
+    }
+
+    if (empty($formData["streetnumber"])) {
+        $errors["streetnumber"] = 'Please enter your street number.';
+    } elseif (!is_numeric($formData["streetnumber"])) {
+        $errors["streetnumber"] = 'Please enter a valid numeric value';
+    }
+
+    if (empty($formData["city"])) {
+        $errors["city"] = 'Please enter your city';
+    } else {
+        $formData["city"] = test_input($formData["city"]);
+    }
+
+    if (empty($formData["zipcode"])) {
+        $errors["zipcode"] = 'Please enter your zipcode';
+    } elseif (!is_numeric($formData["zipcode"])) {
+        $errors["zipcode"] = 'Please enter a valid numeric value';
+    }
+
+    return $errors;
 }
 
-function handleForm($formData, $products)
-{
-    // TODO: form related tasks (step 1)
-    whatIsHappening();
+function handleForm($formData, $products) {
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $email = isset($formData['email']) ? htmlspecialchars($formData['email']) : '';
+        $street = isset($formData['street']) ? htmlspecialchars($formData['street']) : '';
+        $streetnumber = isset($formData['streetnumber']) ? htmlspecialchars($formData['streetnumber']) : '';
+        $city = isset($formData['city']) ? htmlspecialchars($formData['city']) : '';
+        $zipcode = isset($formData['zipcode']) ? htmlspecialchars($formData['zipcode']) : '';
 
-    //Extract user information 
-    $email = isset($formData['email']) ? $formData['email'] : '';
-    $street = isset($formData['street']) ? $formData['street'] : '';
-    $streetnumber = isset($formData['streetnumber']) ? $formData['streetnumber'] : '';
-    $city = isset($formData['city']) ? $formData['city'] : '';
-    $zipcode = isset($formData['zipcode']) ? $formData['zipcode'] : '';
+        $selectedProducts = [];
 
-    //extract selected products
-    $selectedProducts = [];
-    if(isset($formData['products']) && is_array($formData['products'])) {
-        foreach($formData['products'] as $i => $value) {
-            if($value == 1) {
-                $selectedProducts[] = $products[$i]['name'];
+        if (isset($formData['products']) && is_array($formData['products'])) {
+            foreach ($formData['products'] as $i => $value) {
+                if ($value == 1) {
+                    $selectedProducts[] = $products[$i]['name'];
+                }
             }
         }
-    }
 
-    // Display order confirmation 
-    echo "<h2>Order Confirmation";
-    echo "<p>Email: $email</p>";
-    echo "<p>Delivery Address: $street $streetnumber, $city, $zipcode</p>";
-    echo "<p>Selected Products:</p>";
-    echo "<ul>";
-    foreach ($selectedProducts as $products){
-        echo "<li>$products</li>";
-    }
-    echo "</ul>";
+        // Validation
+        $invalidFields = validate($formData);
 
-    if($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $formData = $_POST;
-
-        // Validation (step 2)
-    $invalidFields = validate();
-    if (!empty($invalidFields)) {
-        // TODO: handle errors
-    } else {
-        // TODO: handle successful submission
+        if (!empty($invalidFields)) {
+            // Handle errors
+            echo "<div class='error'>Validation errors:</div>";
+            echo "<ul>";
+            foreach ($invalidFields as $field => $error) {
+                echo "<li>$error</li>";
+            }
+            echo "</ul>";
+        } else {
+            // Handle successful submission
+            echo "<div class='success'>Order placed successfully!</div>";
+            echo "<h2>Order Confirmation</h2>";
+            echo "<p>Email: $email</p>";
+            echo "<p>Delivery Address: $street $streetnumber, $city, $zipcode</p>";
+            echo "<p>Selected Products:</p>";
+            echo "<ul>";
+            foreach ($selectedProducts as $selectedProduct) {
+                echo "<li>$selectedProduct</li>";
+            }
+            echo "</ul>";
+        }
     }
-    }
-
-    
 }
 
-// TODO: replace this if by an actual check for the form to be submitted
+// Replace this if by an actual check for the form to be submitted
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     handleForm($_POST, $products);
 }
