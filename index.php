@@ -81,15 +81,17 @@ function handleForm($formData, $products) {
 
         // Handle validation errors or successful submission
         if (!empty($invalidFields)) {
-            echo "<div class='error'>Validation errors:</div>";
+            echo '<div class="alert alert-danger" role="alert">';
+            echo '<h4 class="alert-heading">Validation errors:</h4>';
             echo "<ul>";
             foreach ($invalidFields as $field => $error) {
                 echo "<li>$error</li>";
             }
             echo "</ul>";
+            echo "</div>";
         } else {
-            echo "<div class='success'>Order placed successfully!</div>";
-            echo "<h2>Order Confirmation</h2>";
+            echo '<div class="alert alert-success" role="alert">';
+            echo "<h2 class='alert-heading'>Order Confirmation</h2>";
             echo "<p>Email: $email</p>";
             echo "<p>Delivery Address: $street $streetnumber, $city, $zipcode</p>";
             echo "<p>Selected Products:</p>";
@@ -98,6 +100,7 @@ function handleForm($formData, $products) {
                 echo "<li>$selectedProduct</li>";
             }
             echo "</ul>";
+            echo '</div>';
         }
     }
 }
