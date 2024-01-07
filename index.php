@@ -18,10 +18,10 @@ function test_input($data) {
 
 $products = [
     ['name' => 'The One With All the Cheesecakes', 'price' => 10.7],
-    ['name' => 'The One With the East German Laundry Detergent - Chickenwings', 'price' => 11.6],
+    ['name' => 'The One With the Chickenwings', 'price' => 11.6],
     ['name' => 'The One With Phoebe`s Cookies', 'price' => 5.3],
-    ['name' => 'The One With The Truth About London - Fried stuff with cheese', 'price' => 7.4],
-    ['name' => 'Joey doesn`t share food! - French Fries', 'price' => 4.4],
+    ['name' => 'The One With The Fried stuff with cheese', 'price' => 7.4],
+    ['name' => 'Joey doesn`t share food!', 'price' => 4.4],
     ['name' => 'The One With the Jam', 'price' => 1.4],
     ['name' => 'The One With the Dozen Lasagnas', 'price' => 12.6],
     ['name' => 'A show called “Mac and C.H.E.E.S.E."', 'price' => 10.6],
