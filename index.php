@@ -24,55 +24,50 @@ $products = [
     ['name' => 'The One With Unagi', 'price' => 14.3],
 ];
 
+// Variable to track total order value
 $totalValue = 0;
 
 function validate($formData) {
     $errors = [];
-    $formData = $_POST;
 
-    if (empty($formData["email"])) {
-        $errors["email"] = 'Email is required';
-    } elseif (!filter_var(test_input($formData["email"]), FILTER_VALIDATE_EMAIL)) {
-        $errors["email"] = 'Invalid email format';
+ // Validation rules
+    if (empty($formData['email']) || !filter_var($formData['email'], FILTER_VALIDATE_EMAIL)) {
+        $errors['email'] = 'Invalid email format';
     }
 
-    if (empty($formData["street"])) {
-        $errors["street"] = 'Please enter your street.';
-    } else {
-        $formData["street"] = test_input($formData["street"]);
+    if (empty($formData['street'])) {
+        $errors['street'] = 'Please enter your street.';
     }
 
-    if (empty($formData["streetnumber"])) {
-        $errors["streetnumber"] = 'Please enter your street number.';
-    } elseif (!is_numeric($formData["streetnumber"])) {
-        $errors["streetnumber"] = 'Please enter a valid numeric value';
+    if (empty($formData['streetnumber']) || !is_numeric($formData['streetnumber'])) {
+        $errors['streetnumber'] = 'Please enter a valid numeric value for street number';
     }
 
-    if (empty($formData["city"])) {
-        $errors["city"] = 'Please enter your city';
-    } else {
-        $formData["city"] = test_input($formData["city"]);
+    if (empty($formData['city'])) {
+        $errors['city'] = 'Please enter your city';
     }
 
-    if (empty($formData["zipcode"])) {
-        $errors["zipcode"] = 'Please enter your zipcode';
-    } elseif (!is_numeric($formData["zipcode"])) {
-        $errors["zipcode"] = 'Please enter a valid numeric value';
+    if (empty($formData['zipcode']) || !is_numeric($formData['zipcode'])) {
+        $errors['zipcode'] = 'Please enter a valid numeric value for zipcode';
     }
 
     return $errors;
 }
 
+// Handle form submission
 function handleForm($formData, $products) {
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $email = isset($formData['email']) ? htmlspecialchars($formData['email']) : '';
-        $street = isset($formData['street']) ? htmlspecialchars($formData['street']) : '';
-        $streetnumber = isset($formData['streetnumber']) ? htmlspecialchars($formData['streetnumber']) : '';
-        $city = isset($formData['city']) ? htmlspecialchars($formData['city']) : '';
-        $zipcode = isset($formData['zipcode']) ? htmlspecialchars($formData['zipcode']) : '';
+        // Extract and sanitize form data
+        $email = isset($formData['email']) ? test_input($formData['email']) : '';
+        $street = isset($formData['street']) ? test_input($formData['street']) : '';
+        $streetnumber = isset($formData['streetnumber']) ? test_input($formData['streetnumber']) : '';
+        $city = isset($formData['city']) ? test_input($formData['city']) : '';
+        $zipcode = isset($formData['zipcode']) ? test_input($formData['zipcode']) : '';
 
+        // Selected products array
         $selectedProducts = [];
 
+        // Process selected products
         if (isset($formData['products']) && is_array($formData['products'])) {
             foreach ($formData['products'] as $i => $value) {
                 if ($value == 1) {
@@ -84,8 +79,8 @@ function handleForm($formData, $products) {
         // Validation
         $invalidFields = validate($formData);
 
+        // Handle validation errors or successful submission
         if (!empty($invalidFields)) {
-            // Handle errors
             echo "<div class='error'>Validation errors:</div>";
             echo "<ul>";
             foreach ($invalidFields as $field => $error) {
@@ -93,7 +88,6 @@ function handleForm($formData, $products) {
             }
             echo "</ul>";
         } else {
-            // Handle successful submission
             echo "<div class='success'>Order placed successfully!</div>";
             echo "<h2>Order Confirmation</h2>";
             echo "<p>Email: $email</p>";
@@ -107,6 +101,7 @@ function handleForm($formData, $products) {
         }
     }
 }
+
 
 // Replace this if by an actual check for the form to be submitted
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
