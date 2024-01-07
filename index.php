@@ -1,7 +1,13 @@
 <?php
 
 declare(strict_types=1);
+
 session_start();
+
+$_SESSION['input_data'] = $_POST;
+
+// Use the current input data, if available, otherwise return empty string
+$inputData = $_SESSION['input_data'] ?? [];
 
 function test_input($data) {
     $data = trim($data);

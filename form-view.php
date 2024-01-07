@@ -31,7 +31,7 @@
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="email">E-mail:</label>
-                <input type="email" id="email" name="email" class="form-control" value="<?= htmlspecialchars($_POST['email'] ?? '') ?>" />
+                <input type="email" id="email" name="email" class="form-control" value="<?= htmlspecialchars($inputData['email'] ?? '') ?>" />
             </div>
             <div></div>
         </div>
@@ -42,21 +42,21 @@
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="street">Street:</label>
-                    <input type="text" name="street" id="street" class="form-control" value="<?= htmlspecialchars($_POST['street'] ?? '') ?>">
+                    <input type="text" name="street" id="street" class="form-control" value="<?= htmlspecialchars($inputData['street'] ?? '') ?>">
                 </div>
                 <div class="form-group col-md-6">
                     <label for="streetnumber">Street number:</label>
-                    <input type="text" id="streetnumber" name="streetnumber" class="form-control" value="<?= htmlspecialchars($_POST['streetnumber'] ?? '') ?>">
+                    <input type="text" id="streetnumber" name="streetnumber" class="form-control" value="<?= htmlspecialchars($inputData['streetnumber'] ?? '') ?>">
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="city">City:</label>
-                    <input type="text" id="city" name="city" class="form-control" value="<?= htmlspecialchars($_POST['city'] ?? '') ?>">
+                    <input type="text" id="city" name="city" class="form-control" value="<?= htmlspecialchars($inputData['city'] ?? '') ?>">
                 </div>
                 <div class="form-group col-md-6">
                     <label for="zipcode">Zipcode</label>
-                    <input type="text" id="zipcode" name="zipcode" class="form-control" value="<?= htmlspecialchars($_POST['zipcode'] ?? '') ?>">
+                    <input type="text" id="zipcode" name="zipcode" class="form-control" value="<?= htmlspecialchars($inputData['zipcode'] ?? '') ?>">
                 </div>
             </div>
         </fieldset>
@@ -66,7 +66,7 @@
             <?php foreach ($products as $i => $product): ?>
                 <label>
 					<?php // <?= is equal to <?php echo ?>
-                    <input type="checkbox" value="1" name="products[<?php echo $i ?>]" <?= isset($_POST['products'][$i]) && $_POST['products'][$i] == 1 ? 'checked' : '' ?>/> <?php echo $product['name'] ?> - 
+                    <input type="checkbox" value="1" name="products[<?php echo $i ?>]" <?= isset($inputData['products'][$i]) && $inputData['products'][$i] == 1 ? 'checked' : '' ?>/> <?php echo $product['name'] ?> - 
                     &euro; <?= number_format($product['price'], 2) ?></label><br />
             <?php endforeach; ?>
         </fieldset>
