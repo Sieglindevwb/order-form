@@ -2,12 +2,24 @@
 
 declare(strict_types=1);
 
+ini_set('display_errors', '1');
+ini_set('display_startup_errors', '1');
+error_reporting(E_ALL);
+
 session_start();
 
 $_SESSION['input_data'] = $_POST;
 
 // Use the current input data, if available, otherwise return empty string
 $inputData = $_SESSION['input_data'] ?? [];
+
+function dd (array $array){
+
+    echo "<pre>";
+    var_dump($array);
+    echo "<pre>";
+    die();
+}
 
 function test_input($data) {
     $data = trim($data);
@@ -34,6 +46,19 @@ $products = [
 $totalValue = 0;
 
 function validate($formData) {
+    /* //Tutorial Basile
+    $error = [];
+    foreach ($_POST as $key => $value) {
+        if ($value !== "") {
+            if ($key === "email" || !filter_var($formData['email'], FILTER_VALIDATE_EMAIL)) 
+        } else {
+        errors[$key] = "The field: $key is not empty"};
+    }
+
+    if (!isset($_POST["products"])) {
+        $errors[] = "please select product";
+    }
+        */
     $errors = [];
 
  // Validation rules
@@ -61,7 +86,12 @@ function validate($formData) {
 }
 
 // Handle form submission
-function handleForm($formData, $products) {
+function handleForm() {
+
+    global $products;
+
+    $formData = $_POST ?? [];
+
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Extract and sanitize form data
         $email = isset($formData['email']) ? test_input($formData['email']) : '';
@@ -91,7 +121,7 @@ function handleForm($formData, $products) {
             echo '<h4 class="alert-heading">Validation errors:</h4>';
             echo "<ul>";
             foreach ($invalidFields as $field => $error) {
-                echo "<li>$error</li>";
+                echo "<li>" . $error . "</li>";
             }
             echo "</ul>";
             echo "</div>";
@@ -103,7 +133,7 @@ function handleForm($formData, $products) {
             echo "<p>Selected Products:</p>";
             echo "<ul>";
             foreach ($selectedProducts as $selectedProduct) {
-                echo "<li>$selectedProduct</li>";
+                echo "<li>" . $selectedProduct . "</li>";
             }
             echo "</ul>";
             echo '</div>';
@@ -114,7 +144,7 @@ function handleForm($formData, $products) {
 
 // Replace this if by an actual check for the form to be submitted
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    handleForm($_POST, $products);
+    handleForm();
 }
 
 require 'form-view.php';
